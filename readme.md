@@ -89,7 +89,7 @@ Lung-Cancer-Risk-Assessment/
 ## 🔧 Technology Stack
 
 * **Backend**: Python, Flask, scikit-learn, pandas, joblib
-* **Frontend**: HTML5, CSS3, JavaScript, Chart.js, Font Awesome
+* **Frontend**: HTML, CSS, JavaScript, Chart.js, Font Awesome
 * **Modeling**: Random Forest, GridSearchCV, Label Encoding, StandardScaler
 
 ---
@@ -174,4 +174,5 @@ MIT License. See the [LICENSE](LICENSE) file for details.
 ## ⚠️ Disclaimer
 
 This tool is intended for informational purposes only and **does not constitute medical advice**. Always consult a qualified healthcare provider for diagnosis or treatment.
+
 
