@@ -3,9 +3,6 @@
 A web-based, AI-powered application to evaluate lung cancer risk based on user-provided health factors. This tool collects 15 inputs via an interactive form, runs a Random Forest classifier in real time, and displays results—including probability, top contributing factors, and model performance metrics—through rich visualizations and recommendations.
 
 ---
-🌐 **Live Demo**: [Lung Cancer Risk Assessment Tool](https://lung-cancer-risk-assessment.onrender.com)
-
----
 ## 📋 Table of Contents
 
 1. [Overview](#overview)
@@ -100,7 +97,7 @@ Lung-Cancer-Risk-Assessment/
 ## 🚀 Installation & Setup
 
 ```bash
-git clone https://github.com/218r1a7230/Lung-Cancer-Risk-Assessment.git
+git clone https://github.com/uday-843/Lung-Cancer-Risk-Assessment.git
 cd Lung-Cancer-Risk-Assessment
 python -m venv venv
 source venv/bin/activate  # or venv\Scripts\activate
@@ -177,3 +174,4 @@ MIT License. See the [LICENSE](LICENSE) file for details.
 ## ⚠️ Disclaimer
 
 This tool is intended for informational purposes only and **does not constitute medical advice**. Always consult a qualified healthcare provider for diagnosis or treatment.
+
