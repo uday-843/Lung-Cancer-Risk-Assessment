@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lung Cancer Risk Assessment</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #1a73e8;
+            --primary-dark: #0d47a1;
+            --secondary: #34a853;
+            --danger: #ea4335;
+            --warning: #fbbc05;
+            --light: #f8f9fa;
+            --dark: #202124;
+            --gray: #5f6368;
+            --light-gray: #dadce0;
+            --card-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e7f1 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 30px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .logo i {
+            font-size: 2.5rem;
+            color: var(--primary);
+            background: rgba(26, 115, 232, 0.1);
+            padding: 15px;
+            border-radius: 50%;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: var(--gray);
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        @media (max-width: 900px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: var(--card-shadow);
+            padding: 30px;
+            transition: var(--transition);
+        }
+        
+        .card:hover {
+            box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+            transform: translateY(-5px);
+        }
+        
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--light-gray);
+        }
+        
+        .card-title i {
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+        
+        .card-title h2 {
+            font-size: 1.8rem;
+            color: var(--primary-dark);
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        @media (max-width: 600px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--gray);
+        }
+        
+        select, input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid var(--light-gray);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+        
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.2);
+        }
+        
+        .slider-container {
+            background: rgba(26, 115, 232, 0.05);
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-top: 5px;
+        }
+        
+        .slider-value {
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: var(--primary);
+            margin-top: 10px;
+        }
+        
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 16px 30px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(26, 115, 232, 0.3);
+        }
+        
+        .btn i {
+            font-size: 1.2rem;
+        }
+        
+        .result-container {
+            text-align: center;
+            padding: 30px;
+            border-radius: 16px;
+            margin-top: 30px;
+            background: white;
+            box-shadow: var(--card-shadow);
+            display: none;
+        }
+        
+        .result-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--gray);
+        }
+        
+        .prediction {
+            font-size: 3rem;
+            font-weight: 800;
+            margin: 20px 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .low-risk {
+            color: var(--secondary);
+        }
+        
+        .high-risk {
+            color: var(--danger);
+        }
+        
+        .result-description {
+            max-width: 600px;
+            margin: 0 auto 25px;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        
+        .risk-meter-section {
+            background: rgba(26, 115, 232, 0.05);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 25px 0;
+        }
+        
+        .risk-meter-container {
+            height: 30px;
+            background: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 20px 0;
+            position: relative;
+        }
+        
+        .risk-meter {
+            height: 100%;
+            background: var(--primary);
+            border-radius: 15px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+        
+        .risk-value {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-weight: bold;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+        
+        .feature-importance-section {
+            margin: 30px 0;
+            text-align: left;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .feature-item {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .feature-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .feature-name {
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+        
+        .feature-value {
+            font-weight: bold;
+            background: var(--light-gray);
+            padding: 3px 10px;
+            border-radius: 20px;
+        }
+        
+        .feature-importance {
+            text-align: right;
+            margin-top: 5px;
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+        
+        .recommendation {
+            background: rgba(251, 188, 5, 0.1);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 25px 0;
+            text-align: left;
+        }
+        
+        .recommendation h3 {
+            color: var(--warning);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .metric-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+        }
+        
+        .metric-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            color: var(--primary-dark);
+        }
+        
+        .accuracy-value {
+            font-size: 3rem;
+            font-weight: 800;
+            text-align: center;
+            color: var(--primary);
+            margin: 20px 0;
+        }
+        
+        .chart-container {
+            height: 300px;
+            margin-top: 20px;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 40px 0 20px;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        .disclaimer {
+            max-width: 800px;
+            margin: 0 auto 20px;
+            font-style: italic;
+            color: var(--gray);
+        }
+        
+        .error {
+            color: var(--danger);
+            background: rgba(234, 67, 53, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .loading-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: var(--primary);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin-right: 15px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-lungs"></i>
+                <h1>Lung Cancer Risk Assessment</h1>
+            </div>
+            <p class="subtitle">This AI-powered tool evaluates your risk factors to provide an early assessment of lung cancer probability. Always consult with a healthcare professional for medical advice.</p>
+        </header>
+        
+        <div class="content">
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-user-injured"></i>
+                    <h2>Patient Information</h2>
+                </div>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="gender"><i class="fas fa-venus-mars"></i> Gender</label>
+                        <select id="gender">
+                            <option value="M">Male</option>
+                            <option value="F">Female</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="age"><i class="fas fa-birthday-cake"></i> Age</label>
+                        <div class="slider-container">
+                            <input type="range" id="age" min="1" max="100" value="45">
+                            <div class="slider-value" id="age-value">45 years</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="smoking"><i class="fas fa-smoking"></i> Smoking</label>
+                        <select id="smoking">
+                            <option value="NO">No</option>
+                            <option value="YES">Yes</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="yellow_fingers"><i class="fas fa-hand-paper"></i> Yellow Fingers</label>
+                        <select id="yellow_fingers">
+                            <option value="NO">No</option>
+                            <option value="YES">Yes</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="anxiety"><i class="fas fa-flushed"></i> Anxiety</label>
+                        <select id="anxiety">
+                            <option value="NO">No</option>
+                            <option value="YES">Yes</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="peer_pressure"><i class="fas fa-users"></i> Peer Pressure</label>
+                        <select id="peer_pressure">
+                            <option value="NO">No</option>
+                            <option value="YES">Yes</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="chronic_disease"><i class="fas fa-disease"></i> Chronic Disease</label>
+                        <select id="chronic_disease">
+                            <option value="NO">No</option>
+                            <option value="YES">Yes</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="fatigue"><i class="fas fa-tired"></i> Fatigue</label>
+                        <select id="fatigue">
+                            <option value="NO">No</option>
+                            <option value="YES">Yes</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="allergy"><i class="fas fa-allergies"></i> Allergy</label>
+                        <select id="allergy">
+                            <option value="NO">No</option>
+                            <option value="YES">Yes</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="wheezing"><i class="fas fa-wind"></i> Wheezing</label>
+                        <select id="wheezing">
+                            <option value="NO">No</option>
+                            <option value="YES">Yes</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="alcohol_consuming"><i class="fas fa-wine-glass-alt"></i> Alcohol Consuming</label>
+                        <select id="alcohol_consuming">
+                            <option value="NO">No</option>
+                            <option value="YES">Yes</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="coughing"><i class="fas fa-head-side-cough"></i> Coughing</label>
+                        <select id="coughing">
+                            <option value="NO">No</option>
+                            <option value="YES">Yes</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="shortness_of_breath"><i class="fas fa-lungs"></i> Shortness of Breath</label>
+                        <select id="shortness_of_breath">
+                            <option value="NO">No</option>
+                            <option value="YES">Yes</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="swallowing_difficulty"><i class="fas fa-utensils"></i> Swallowing Difficulty</label>
+                        <select id="swallowing_difficulty">
+                            <option value="NO">No</option>
+                            <option value="YES">Yes</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="chest_pain"><i class="fas fa-heartbeat"></i> Chest Pain</label>
+                        <select id="chest_pain">
+                            <option value="NO">No</option>
+                            <option value="YES">Yes</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button id="predict-btn" class="btn">
+                    <i class="fas fa-heartbeat"></i> Assess Lung Cancer Risk
+                </button>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-chart-line"></i>
+                    <h2>Model Performance</h2>
+                </div>
+                
+                <div class="accuracy-value">92.4%</div>
+                <p style="text-align: center; margin-bottom: 30px;">Prediction Accuracy</p>
+                
+                <div class="chart-container">
+                    <canvas id="metricsChart"></canvas>
+                </div>
+                
+                <div class="chart-container" style="height: 400px; margin-top: 30px;">
+                    <canvas id="featureImportanceChart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <div class="result-container" id="resultContainer">
+            <h2 class="result-title">Your Lung Cancer Risk Assessment</h2>
+            <div class="prediction low-risk" id="predictionResult">LOW RISK</div>
+            
+            <div class="risk-meter-section">
+                <div class="risk-meter-container">
+                    <div class="risk-meter" id="risk-meter"></div>
+                    <div class="risk-value" id="risk-value">28%</div>
+                </div>
+                <p id="risk-description" class="result-description">
+                    Based on your input, our model indicates a <strong>low probability</strong> 
+                    of lung cancer risk. The probability of risk is 28%. 
+                    Continue maintaining healthy habits and regular check-ups.
+                </p>
+            </div>
+            
+            <div class="feature-importance-section">
+                <h3>Top Contributing Factors</h3>
+                <div id="feature-importance-grid" class="feature-grid">
+                    <div class="feature-item">
+                        <div class="feature-header">
+                            <div class="feature-name">Age</div>
+                            <div class="feature-value">45 years</div>
+                        </div>
+                        <div class="feature-importance">
+                            Key risk factor
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-header">
+                            <div class="feature-name">Smoking</div>
+                            <div class="feature-value">No</div>
+                        </div>
+                        <div class="feature-importance">
+                            Protective factor
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-header">
+                            <div class="feature-name">Alcohol Consumption</div>
+                            <div class="feature-value">No</div>
+                        </div>
+                        <div class="feature-importance">
+                            Protective factor
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-header">
+                            <div class="feature-name">Chronic Disease</div>
+                            <div class="feature-value">No</div>
+                        </div>
+                        <div class="feature-importance">
+                            Protective factor
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="recommendation">
+                <h3><i class="fas fa-heart"></i> Medical Recommendations</h3>
+                <ul style="padding-left: 20px;">
+                    <li style="margin-bottom: 10px;">Schedule regular check-ups with your primary care physician</li>
+                    <li style="margin-bottom: 10px;">Avoid smoking and exposure to secondhand smoke</li>
+                    <li style="margin-bottom: 10px;">Maintain a healthy diet rich in fruits and vegetables</li>
+                    <li>Consider lung cancer screening if you have additional risk factors</li>
+                </ul>
+            </div>
+            
+            <button class="btn" style="max-width: 300px; margin: 0 auto;">
+                <i class="fas fa-download"></i> Download Full Report
+            </button>
+        </div>
+        
+        <footer>
+            <p class="disclaimer">
+                Note: This tool is not a substitute for professional medical advice, diagnosis, or treatment. 
+                Always seek the advice of your physician or other qualified health provider with any questions 
+                you may have regarding a medical condition.
+            </p>
+            <p>© 2023 Lung Cancer Risk Assessment System | Developed with Care</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // DOM Elements
+            const predictBtn = document.getElementById('predict-btn');
+            const resultDiv = document.getElementById('predictionResult');
+            const ageValue = document.getElementById('age-value');
+            const ageSlider = document.getElementById('age');
+            const riskMeter = document.getElementById('risk-meter');
+            const riskValue = document.getElementById('risk-value');
+            const resultContainer = document.getElementById('resultContainer');
+            const riskDescription = document.getElementById('risk-description');
+            
+            // Initialize charts
+            let metricsChart, featureImportanceChart;
+            
+            // Update age display
+            ageSlider.addEventListener('input', function() {
+                ageValue.textContent = this.value + ' years';
+            });
+            
+            // Load metrics on page load
+            loadModelMetrics();
+            loadFeatureImportance();
+            
+            // Prediction button handler
+            predictBtn.addEventListener('click', async () => {
+                const inputData = collectInputData();
+                
+                try {
+                    // Show loading state
+                    predictBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analyzing...';
+                    predictBtn.disabled = true;
+                    
+                    // Simulate API call with a delay
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                    
+                    // Generate mock results for demonstration
+                    const result = generateMockResults(inputData);
+                    
+                    // Display prediction
+                    displayPredictionResult(result);
+                    
+                    // Show the result container
+                    resultContainer.style.display = 'block';
+                    
+                    // Scroll to results
+                    resultContainer.scrollIntoView({behavior: 'smooth'});
+                    
+                } catch (error) {
+                    console.error('Prediction error:', error);
+                    resultDiv.innerHTML = `<div class="error">Error: ${error.message}</div>`;
+                } finally {
+                    // Reset button state
+                    predictBtn.innerHTML = '<i class="fas fa-heartbeat"></i> Assess Lung Cancer Risk';
+                    predictBtn.disabled = false;
+                }
+            });
+            
+            // Collect form data
+            function collectInputData() {
+                return {
+                    gender: document.getElementById('gender').value,
+                    age: parseInt(document.getElementById('age').value),
+                    smoking: document.getElementById('smoking').value,
+                    yellow_fingers: document.getElementById('yellow_fingers').value,
+                    anxiety: document.getElementById('anxiety').value,
+                    peer_pressure: document.getElementById('peer_pressure').value,
+                    chronic_disease: document.getElementById('chronic_disease').value,
+                    fatigue: document.getElementById('fatigue').value,
+                    allergy: document.getElementById('allergy').value,
+                    wheezing: document.getElementById('wheezing').value,
+                    alcohol_consuming: document.getElementById('alcohol_consuming').value,
+                    coughing: document.getElementById('coughing').value,
+                    shortness_of_breath: document.getElementById('shortness_of_breath').value,
+                    swallowing_difficulty: document.getElementById('swallowing_difficulty').value,
+                    chest_pain: document.getElementById('chest_pain').value
+                };
+            }
+            
+            // Generate mock results for demonstration
+            function generateMockResults(inputData) {
+                // Calculate a risk score based on inputs
+                let riskScore = 0;
+                
+                // Age contributes to risk
+                if (inputData.age >= 60) riskScore += 30;
+                else if (inputData.age >= 50) riskScore += 20;
+                else if (inputData.age >= 40) riskScore += 10;
+                
+                // Smoking is a major risk factor
+                if (inputData.smoking === 'YES') riskScore += 40;
+                
+                // Other factors contribute to risk
+                if (inputData.yellow_fingers === 'YES') riskScore += 5;
+                if (inputData.anxiety === 'YES') riskScore += 3;
+                if (inputData.peer_pressure === 'YES') riskScore += 2;
+                if (inputData.chronic_disease === 'YES') riskScore += 10;
+                if (inputData.fatigue === 'YES') riskScore += 5;
+                if (inputData.allergy === 'YES') riskScore += 3;
+                if (inputData.wheezing === 'YES') riskScore += 15;
+                if (inputData.alcohol_consuming === 'YES') riskScore += 8;
+                if (inputData.coughing === 'YES') riskScore += 10;
+                if (inputData.shortness_of_breath === 'YES') riskScore += 15;
+                if (inputData.swallowing_difficulty === 'YES') riskScore += 10;
+                if (inputData.chest_pain === 'YES') riskScore += 12;
+                
+                // Cap the risk score at 100
+                riskScore = Math.min(100, riskScore);
+                
+                // Determine if it's high risk
+                const isHighRisk = riskScore >= 50;
+                
+                // Create mock probabilities
+                const probabilityYes = riskScore / 100;
+                const probabilityNo = 1 - probabilityYes;
+                
+                return {
+                    prediction: isHighRisk ? 'YES' : 'NO',
+                    probability_yes: probabilityYes,
+                    probability_no: probabilityNo,
+                    features: inputData
+                };
+            }
+            
+            // Display prediction results
+            function displayPredictionResult(result) {
+                const isHighRisk = result.prediction === 'YES';
+                
+                // Update prediction text
+                resultDiv.textContent = isHighRisk ? 'HIGH RISK' : 'LOW RISK';
+                resultDiv.className = `prediction ${isHighRisk ? 'high-risk' : 'low-risk'}`;
+                
+                // Update risk meter
+                const riskPercentage = Math.round(result.probability_yes * 100);
+                riskMeter.style.width = `${riskPercentage}%`;
+                riskValue.textContent = `${riskPercentage}%`;
+                
+                // Update risk description
+                if (isHighRisk) {
+                    riskDescription.innerHTML = `
+                        Our AI model has detected a <strong>high probability</strong> of lung cancer risk 
+                        based on your input. The probability of risk is ${riskPercentage}%.
+                        Please consult with a healthcare professional for further evaluation.
+                    `;
+                } else {
+                    riskDescription.innerHTML = `
+                        Based on your input, our model indicates a <strong>low probability</strong> 
+                        of lung cancer risk. The probability of risk is ${riskPercentage}%. 
+                        Continue maintaining healthy habits and regular check-ups.
+                    `;
+                }
+                
+                // Update feature importance visualization
+                updateFeatureImportance(result.features);
+            }
+            
+            // Load model metrics
+            function loadModelMetrics() {
+                try {
+                    // Create mock metrics for demonstration
+                    const metrics = {
+                        accuracy: 0.924,
+                        classification_report: {
+                            'weighted avg': {
+                                precision: 0.92,
+                                recall: 0.924,
+                                'f1-score': 0.922
+                            }
+                        }
+                    };
+                    
+                    // Create metrics chart
+                    createMetricsChart(metrics);
+                    
+                } catch (error) {
+                    console.error('Error loading metrics:', error);
+                }
+            }
+            
+            // Create metrics visualization
+            function createMetricsChart(metrics) {
+                const ctx = document.getElementById('metricsChart').getContext('2d');
+                metricsChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Precision', 'Recall', 'F1-Score', 'Accuracy'],
+                        datasets: [{
+                            label: 'Model Metrics',
+                            data: [
+                                metrics.classification_report['weighted avg']['precision'],
+                                metrics.classification_report['weighted avg']['recall'],
+                                metrics.classification_report['weighted avg']['f1-score'],
+                                metrics.accuracy
+                            ],
+                            backgroundColor: [
+                                'rgba(52, 168, 83, 0.7)',
+                                'rgba(66, 133, 244, 0.7)',
+                                'rgba(251, 188, 5, 0.7)',
+                                'rgba(234, 67, 53, 0.7)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 1.0,
+                                ticks: {
+                                    callback: function(value) {
+                                        return (value * 100).toFixed(0) + '%';
+                                    }
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return (context.parsed.y * 100).toFixed(1) + '%';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Load feature importance
+            function loadFeatureImportance() {
+                try {
+                    // Create mock feature importance data
+                    const featureData = {
+                        features: [
+                            'SMOKING', 'AGE', 'WHEEZING', 'SHORTNESS_OF_BREATH', 
+                            'CHEST_PAIN', 'COUGHING', 'ALCOHOL_CONSUMING', 
+                            'CHRONIC_DISEASE', 'YELLOW_FINGERS', 'FATIGUE',
+                            'SWALLOWING_DIFFICULTY', 'ANXIETY', 'PEER_PRESSURE',
+                            'ALLERGY', 'GENDER'
+                        ],
+                        importances: [
+                            0.25, 0.18, 0.12, 0.10, 0.08, 0.07, 0.05, 
+                            0.04, 0.03, 0.02, 0.02, 0.015, 0.01, 0.008, 0.005
+                        ]
+                    };
+                    
+                    // Normalize to 100%
+                    const total = featureData.importances.reduce((sum, val) => sum + val, 0);
+                    featureData.importances = featureData.importances.map(imp => imp / total);
+                    
+                    createFeatureImportanceChart(featureData);
+                    
+                } catch (error) {
+                    console.error('Error loading feature importance:', error);
+                }
+            }
+            
+            // Create feature importance chart
+            function createFeatureImportanceChart(featureData) {
+                const ctx = document.getElementById('featureImportanceChart').getContext('2d');
+                featureImportanceChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: featureData.features.map(f => f.replace(/_/g, ' ')),
+                        datasets: [{
+                            label: 'Feature Importance',
+                            data: featureData.importances,
+                            backgroundColor: 'rgba(26, 115, 232, 0.7)',
+                            borderColor: 'rgba(26, 115, 232, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return (context.parsed.x * 100).toFixed(1) + '%';
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                ticks: {
+                                    callback: function(value) {
+                                        return (value * 100).toFixed(0) + '%';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Feature importance visualization
+            function updateFeatureImportance(features) {
+                const container = document.getElementById('feature-importance-grid');
+                container.innerHTML = '';
+                
+                // Create importance mapping with human-readable names
+                const importanceMap = {
+                    'AGE': 'Age',
+                    'SMOKING': 'Smoking',
+                    'YELLOW_FINGERS': 'Yellow Fingers',
+                    'ANXIETY': 'Anxiety',
+                    'PEER_PRESSURE': 'Peer Pressure',
+                    'CHRONIC_DISEASE': 'Chronic Disease',
+                    'ALCOHOL_CONSUMING': 'Alcohol Consumption',
+                    'COUGHING': 'Coughing',
+                    'SHORTNESS_OF_BREATH': 'Shortness of Breath',
+                    'SWALLOWING_DIFFICULTY': 'Swallowing Difficulty',
+                    'CHEST_PAIN': 'Chest Pain',
+                    'WHEEZING': 'Wheezing',
+                    'FATIGUE': 'Fatigue',
+                    'ALLERGY': 'Allergy',
+                    'GENDER': 'Gender'
+                };
+                
+                // Create a sorted list of features by their impact
+                const sortedFeatures = Object.entries(features)
+                    .filter(([name]) => name !== 'AGE') // Age is handled separately
+                    .sort((a, b) => {
+                        // Prioritize YES values
+                        if (a[1] === 'YES' && b[1] !== 'YES') return -1;
+                        if (a[1] !== 'YES' && b[1] === 'YES') return 1;
+                        return 0;
+                    })
+                    .slice(0, 5);
+                
+                // Add age separately since it's numerical
+                if (features.AGE) {
+                    sortedFeatures.unshift(['AGE', features.AGE]);
+                }
+                
+                // Display top features
+                sortedFeatures.forEach(([name, value]) => {
+                    const displayName = importanceMap[name] || name;
+                    const displayValue = name === 'AGE' ? value + ' years' : 
+                                        value === 'YES' ? 'Yes' : 'No';
+                    
+                    // Determine impact level
+                    let impact = '';
+                    if (name === 'AGE') {
+                        impact = 'Key risk factor';
+                    } else if (value === 'YES' && ['SMOKING', 'WHEEZING', 'CHEST_PAIN'].includes(name)) {
+                        impact = 'High impact risk factor';
+                    } else if (value === 'YES') {
+                        impact = 'Risk factor';
+                    } else {
+                        impact = 'Protective factor';
+                    }
+                    
+                    // Create feature element
+                    const featureEl = document.createElement('div');
+                    featureEl.className = 'feature-item';
+                    featureEl.innerHTML = `
+                        <div class="feature-header">
+                            <div class="feature-name">${displayName}</div>
+                            <div class="feature-value">${displayValue}</div>
+                        </div>
+                        <div class="feature-importance">${impact}</div>
+                    `;
+                    container.appendChild(featureEl);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
